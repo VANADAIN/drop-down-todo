@@ -3,8 +3,10 @@ from PyQt5.QtGui import QKeySequence, QFont, QCursor, QStandardItemModel, QStand
 from PyQt5.QtCore import Qt
 
 from config import Config
+from db import Database
 
 config = Config()
+db = Database()
 
 class TodoApp(QWidget):
     def __init__(self):
@@ -81,7 +83,6 @@ class TodoApp(QWidget):
         label.setStyleSheet(f'padding-left: 3px; color: white; max-width: 400;')
 
         done_button = QPushButton("✓")
-        print(done_button)
         done_button.clicked.connect(lambda: self.done(label))
         done_button.setStyleSheet("color: white; height:30px; Font: 14px;")
         done_button.setFixedWidth(30)
@@ -107,17 +108,63 @@ class TodoApp(QWidget):
 
         self.textbox.clear()
 
+        db.add(text, False)
+
+    def add_from_db(self):
+        todos = db.get_all()
+        print(todos)
+        for item in todos:
+            todo = QWidget()
+            label = QLabel(item[0]) # text
+            label.setFont(QFont('Monospace', 12))
+            label.setWordWrap(True);
+            label.setStyleSheet(f'padding-left: 3px; color: white; max-width: 400;')
+
+            done_button = QPushButton("✓")
+            done_button.clicked.connect(lambda: self.done(label))
+            done_button.setStyleSheet("color: white; height:30px; Font: 14px;")
+            done_button.setFixedWidth(30)
+            done_button.setCursor(QCursor(Qt.PointingHandCursor))
+
+            delete_button = QPushButton("x")
+            
+            delete_button.setStyleSheet("color: white; height:30px; Font: 14px")
+            delete_button.setFixedWidth(30)
+            delete_button.setCursor(QCursor(Qt.PointingHandCursor))
+
+            hbox = QHBoxLayout()
+            hbox.addWidget(label)
+            hbox.addWidget(done_button)
+            hbox.addWidget(delete_button)
+
+            todo.setLayout(hbox)
+
+            self.todo_stack.layout().addWidget(todo)
+
+            del_parent = delete_button.parentWidget()
+            delete_button.clicked.connect(lambda: self.delete(del_parent))
+
+            if item[1] == 1:
+                done_button.click()
+
+
     def done(self, instance):
         f = instance.font()
-        
+        text = instance.text()
+
         if f.strikeOut():
             f.setStrikeOut(False)
+            db.change_status(text, False)
         else:
             f.setStrikeOut(True)
+            db.change_status(text, True)
+
         instance.setFont(f)
 
     def delete(self, parent):
         parent.setParent(None)
+        todo_text = parent.layout().itemAt(0).widget().text()
+        db.delete(todo_text)
 
     def clean(self):
         for i in reversed(range(self.todo_stack.layout().count())): 

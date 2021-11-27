@@ -8,12 +8,13 @@ from PyQt5.QtCore import QRect, QPropertyAnimation, Qt
 
 from todo import TodoApp
 
+
 config = Config()
 
 # TODO: 
 
 #---------------- UTILS
-# create database class
+# код бд 
 # кнопка задвигания около лэйбла
 # кнопка смены стороны около лейбла
 # анимация смены стороны
@@ -57,6 +58,8 @@ class Window(QMainWindow):
         self.internal.setMinimumWidth(350)
         self.setCentralWidget(self.internal)
         self.show()
+
+        self.internal.add_from_db()
 
 
     def toggle(self):

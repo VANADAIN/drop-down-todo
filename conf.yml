@@ -3,7 +3,7 @@
 # alt+tab to make hidden window active
 
 
-#####################  main
+#####################  main  #####################
 
 # if you want to display a version and window 
 # animation buttons (True/False)
@@ -15,18 +15,18 @@ toggle: "Ctrl+Shift+/"
 # stacking mode (up/down)
 stack: "up"
 
-#####################  colors 
+#####################  colors  #####################
 
 bg: "#212329"
 border_color: "#598558"
 text_color: "white"
 
-#####################  border style
+#####################  border style #####################
 
 # pixel thickness
 border_px: 1px
 
-#####################  todo widgets style
+#####################  todo widgets style  #####################
 
 font_size: "12"
 
